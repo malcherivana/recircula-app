@@ -13,7 +13,7 @@ App web responsivo para doações e trocas locais, construído com React, Vite e
 ## Desenvolvimento local
 
 1. Instale Node.js 22.12 ou superior.
-2. Instale dependências com `npm install`.
+2. Instale as dependências travadas com `npm ci`.
 3. Crie um projeto no [Supabase](https://supabase.com/) e configure o banco conforme abaixo.
 4. Copie `.env.example` para `.env` e preencha os valores do projeto.
 5. Rode `npm run dev` e abra o endereço local exibido pelo Vite.
@@ -52,7 +52,7 @@ O painel acompanha contas, anúncios, favoritos, conversas e volume/horário de 
 
 ## Publicação na Vercel
 
-1. Envie esta pasta para um repositório Git privado e importe-o na Vercel; se o repositório contém a pasta pai, configure o **Root Directory** como `recircula-app`.
+1. Envie esta pasta para um repositório Git privado e importe-o na Vercel. Configure o **Root Directory** para a pasta que contém `package.json`, `index.html` e `vercel.json` (a raiz deste app), não para outro projeto ou template.
 2. A Vercel usa `vercel.json`: comando de build `npm run build` e diretório de saída `dist`.
 3. Em **Project Settings → Environment Variables**, configure `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` para os ambientes desejados.
 4. Faça o deploy e adicione o endereço `.vercel.app` gerado à lista de URLs permitidas do Supabase. Repita para o domínio próprio se houver.

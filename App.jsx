@@ -27,7 +27,9 @@ import {
   Clock,
   Home as HomeIcon,
   LogOut,
+  LockKeyhole,
   MapPin,
+  Mail,
   MessageCircle,
   Package,
   Plus,
@@ -85,7 +87,10 @@ const ICONS = {
   heart: Heart,
   home: HomeIcon,
   "log-out": LogOut,
+  lock: LockKeyhole,
+  mail: Mail,
   "map-pin": MapPin,
+  map: MapPin,
   "message-circle": MessageCircle,
   "message-square": MessageSquare,
   package: Package,
@@ -518,6 +523,7 @@ export default function App() {
   const [activeThreadId, setActiveThreadId] = useState(null);
   const [draftMessage, setDraftMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const isAdmin = auth?.app_metadata?.role === "admin";
 
   useEffect(() => {
     if (!supabase) {
@@ -651,7 +657,6 @@ export default function App() {
   const activeThread = threads.find((thread) => thread.id === activeThreadId);
   const myItems = auth ? items.filter((item) => item.ownerId === auth.id) : [];
   const userMetadata = auth?.user_metadata || {};
-  const isAdmin = auth?.app_metadata?.role === "admin";
   const profile = auth
     ? {
         name: userMetadata.display_name || "Membro",
@@ -1010,6 +1015,7 @@ export default function App() {
         {screen === "detail" && activeItem && (
           <Detail
             item={activeItem}
+            isOwner={activeItem.ownerId === auth?.id}
             onBack={() => setScreen(tab === "search" ? "search" : "home")}
             interested={Boolean(interested[activeItem.id])}
             onInterest={async () => {
@@ -1635,7 +1641,7 @@ function Detail({ item, isOwner, onBack, interested, onInterest, saved, toggleSa
           <View style={styles.interestedBox}>
             <Feather name="check" size={16} color="#2F5233" />
             <Text style={styles.interestedText}>
-              Interesse enviado! {item.dono.split(" ")[0]} vai receber seu contato.
+              Conversa iniciada! Envie uma mensagem para combinar os detalhes.
             </Text>
           </View>
         ) : (
@@ -1644,10 +1650,12 @@ function Detail({ item, isOwner, onBack, interested, onInterest, saved, toggleSa
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity style={styles.outlineBtn} onPress={onGoConversation}>
-          <Feather name="message-circle" size={15} color={GREEN} />
-          <Text style={styles.outlineBtnText}>Enviar mensagem</Text>
-        </TouchableOpacity>
+        {!isOwner && (
+          <TouchableOpacity style={styles.outlineBtn} onPress={onGoConversation}>
+            <Feather name="message-circle" size={15} color={GREEN} />
+            <Text style={styles.outlineBtnText}>Enviar mensagem</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </ScrollView>
   );
@@ -1807,7 +1815,7 @@ function MessagesList({ threads, onOpen }) {
                   </View>
                   <Text style={styles.threadItemLabel} numberOfLines={1}>{t.itemTitle}</Text>
                   <Text style={styles.threadPreview} numberOfLines={1}>
-                    {last.from === "me" ? "Você: " : ""}{last.text}
+                    {last ? `${last.from === "me" ? "Você: " : ""}${last.text}` : "Inicie a conversa"}
                   </Text>
                 </View>
                 <Feather name="chevron-right" size={18} color={MUTED} />
